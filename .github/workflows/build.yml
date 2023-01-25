@@ -7,7 +7,7 @@ on:
 jobs:
   build:
     name: Build on Magisk
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Check out patches
@@ -103,6 +103,7 @@ jobs:
       - name: Apply Magisk test Patches
         run: |
           git -C Magisk apply ../patches/Magisk/patch_vivo_do_mount_check.diff
+          git -C Magisk apply ../patches/Magisk/patch_vivo_ramdisk.diff
           #git -C Magisk apply ../patches/Magisk/mountbind2product.diff
 
       - name: Build Magisk test
