@@ -1,19 +1,21 @@
 diff --git a/scripts/boot_patch.sh b/scripts/boot_patch.sh
-index c334e8d84dc6aad2ed8ff37c2c8dbcf845833c17..5a0a844b640e9b8c81de51a6eed2128ad5929581 100644
+index c334e8d84dc6aad2ed8ff37c2c8dbcf845833c17..64cb437771ed42b4e6ac99af1a05c7d2cb407afd 100644
 --- a/scripts/boot_patch.sh
 +++ b/scripts/boot_patch.sh
-@@ -135,6 +135,23 @@ case $((STATUS & 3)) in
+@@ -135,6 +135,25 @@ case $((STATUS & 3)) in
      ;;
  esac
  
 +# Check vivo boot image
-+./magiskboot cpio ./ramdisk.cpio exists /init.vivo.rc 2>/dev/null
++./magiskboot cpio ramdisk.cpio \
++"exists init.vivo.rc"
 +if [ $? -ne 0 ]; then
 +    VIVO=0
 +else
 +    ui_print "- init.vivo.rc detected"
 +    VIVO=1
-+    ./magiskboot cpio ./ramdisk.cpio exists /fstab.qcom 2>/dev/null
++    ./magiskboot cpio ramdisk.cpio \
++    "exists fstab.qcom"
 +    if [ $? -ne 0 ]; then
 +        ui_print "! Coundn't find fstab.qcom"
 +        QCOM=0
@@ -26,7 +28,7 @@ index c334e8d84dc6aad2ed8ff37c2c8dbcf845833c17..5a0a844b640e9b8c81de51a6eed2128a
  # Work around custom legacy Sony /init -> /(s)bin/init_sony : /init.real setup
  INIT=init
  if [ $((STATUS & 4)) -ne 0 ]; then
-@@ -165,6 +182,32 @@ if [ -f magisk64 ]; then
+@@ -165,6 +184,35 @@ if [ -f magisk64 ]; then
    unset SKIP64
  fi
  
@@ -34,23 +36,26 @@ index c334e8d84dc6aad2ed8ff37c2c8dbcf845833c17..5a0a844b640e9b8c81de51a6eed2128a
 +if [ $VIVO -ne 0 ]; then
 +    ui_print "- Patching ramdisk for vivo devices"
 +    mkdir vivo
-+    ./magiskboot cpio ./ramdisk.cpio \
-+    "extract /init.vivo.rc ./vivo/"
++    ./magiskboot cpio ramdisk.cpio \
++    "extract init.vivo.rc ./vivo/init.vivo.rc"
 +    ./magiskboot hexpatch ./vivo/init.vivo.rc \
 +    237669766F5F6461656D6F6E206164646564206279207A68616E676D696E676B61690A73657276696365207669766F5F6461656D6F6E202F73797374656D2F62696E2F7669766F5F6461656D6F6E0A20202020636C617373206D61696E \
 +    2348692C7669766F2C7669766F5F6461656D6F6E2069732064697361626C656421210A234F4B2C746869732073657276696365207669766F5F6461656D6F6E2069732064697361626C65642121210A23446F6E27742073746172742121
-+    ./magiskboot cpio ./ramdisk.cpio \
-+    "rm /init.vivo.rc"
-+    "add 0750 /init.vivo.rc ./vivo/init.vivo.rc"
-+    if [ $KEEPFORCEENCRYPT -ne false ];then
++    ./magiskboot cpio ramdisk.cpio \
++    "rm init.vivo.rc" \
++    "add 0750 init.vivo.rc ./vivo/init.vivo.rc"
++    if [ $KEEPFORCEENCRYPT = true ];then
 +        if [ $QCOM -ne 0 ];then
 +            ui_print "- Patching fstab to fix encrypt"
++            ./magiskboot cpio ramdisk.cpio \
++            "extract fstab.qcom ./vivo/fstab.qcom"
++            # 636865636B2C656E656E63727970743D666F6F746572
 +            ./magiskboot hexpatch ./vivo/fstab.qcom \
-+            636865636B2C66F726365656E63727970743D666F6F6F746572 \
-+            636865636B2656E656E63727970743D666F6F6F746572202020
-+            ./magiskboot cpio ./ramdisk.cpio \
-+            "rm /fstab.qcom"
-+            "add 0640 /fstab.qcom ./vivo/fstab.qcom"
++            636865636B2C666F726365656E63727970743D666F6F746572 \
++            636865636B2C656E656E63727970743D666F6F746572202020
++            ./magiskboot cpio ramdisk.cpio \
++            "rm fstab.qcom" \
++            "add 0640 fstab.qcom ./vivo/fstab.qcom"
 +        fi
 +    fi
 +    rm -rf ./vivo
@@ -59,7 +64,7 @@ index c334e8d84dc6aad2ed8ff37c2c8dbcf845833c17..5a0a844b640e9b8c81de51a6eed2128a
  ./magiskboot cpio ramdisk.cpio \
  "add 0750 $INIT magiskinit" \
  "mkdir 0750 overlay.d" \
-@@ -204,6 +247,14 @@ if [ -f kernel ]; then
+@@ -204,6 +252,14 @@ if [ -f kernel ]; then
    # Before: [mov w2, #-221]   (-__NR_execve)
    # After:  [mov w2, #-32768]
    ./magiskboot hexpatch kernel 821B8012 E2FF8F12
