@@ -1,5 +1,5 @@
 diff --git a/scripts/boot_patch.sh b/scripts/boot_patch.sh
-index c334e8d84dc6aad2ed8ff37c2c8dbcf845833c17..64cb437771ed42b4e6ac99af1a05c7d2cb407afd 100644
+index c334e8d84dc6aad2ed8ff37c2c8dbcf845833c17..92b7c0e9fa1f8bb40845d6622e47a887a7becdbf 100644
 --- a/scripts/boot_patch.sh
 +++ b/scripts/boot_patch.sh
 @@ -135,6 +135,25 @@ case $((STATUS & 3)) in
@@ -44,7 +44,7 @@ index c334e8d84dc6aad2ed8ff37c2c8dbcf845833c17..64cb437771ed42b4e6ac99af1a05c7d2
 +    ./magiskboot cpio ramdisk.cpio \
 +    "rm init.vivo.rc" \
 +    "add 0750 init.vivo.rc ./vivo/init.vivo.rc"
-+    if [ $KEEPFORCEENCRYPT = true ];then
++    if [ $KEEPFORCEENCRYPT = false ];then
 +        if [ $QCOM -ne 0 ];then
 +            ui_print "- Patching fstab to fix encrypt"
 +            ./magiskboot cpio ramdisk.cpio \
