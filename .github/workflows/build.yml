@@ -2,7 +2,7 @@ name: Magisk Build
 
 on:
   push:
-    branches: [ master ]
+    branches: [ 26.1 ]
 
 jobs:
   build:
@@ -18,7 +18,7 @@ jobs:
         with:
           path: Magisk
           repository: topjohnwu/Magisk
-          ref: 6066b5cf86703512451a021cf1aaf1a877530af7
+          ref: d0c9384233412c91d3538336e26fb419dd40c850
           submodules: 'recursive'
           fetch-depth: 0
 
@@ -27,7 +27,7 @@ jobs:
         with:
           path: libsu
           repository: topjohnwu/libsu
-          ref: 9aa478c054d8d53b66b4401cb60e7139d46ede49
+          ref: 08dde991f0b73eea8816ea0dc1a51b06e2499bd8
           fetch-depth: 0
 
       - name: Set up JDK 11
