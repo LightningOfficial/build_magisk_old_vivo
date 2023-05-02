@@ -13,8 +13,8 @@ index 0c7e64024..71fdb361e 100644
                  setMessage(R.string.unsupport_other_su_msg)
 diff --git a/native/src/core/applets.cpp b/native/src/core/applets.cpp
 index 8d0d81446..41b8e8b01 100644
---- a/native/jni/core/applets.cpp
-+++ b/native/jni/core/applets.cpp
+--- a/native/src/core/applets.cpp
++++ b/native/src/core/applets.cpp
 @@ -10,7 +10,7 @@ using namespace std;
  
  using main_fun = int (*)(int, char *[]);
@@ -26,8 +26,8 @@ index 8d0d81446..41b8e8b01 100644
  static int call_applet(int argc, char *argv[]) {
 diff --git a/native/src/include/magisk.hpp b/native/src/include/magisk.hpp
 index 466e5f439..4ff87265a 100644
---- a/native/jni/include/magisk.hpp
-+++ b/native/jni/include/magisk.hpp
+--- a/native/src/include/magisk.hpp
++++ b/native/src/include/magisk.hpp
 @@ -28,7 +28,7 @@ extern std::string  MAGISKTMP;
  #define ZYGISKBIN   INTLROOT "/zygisk"
  #define SELINUXMOCK INTLROOT "/selinux"
